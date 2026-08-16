@@ -6,7 +6,7 @@
 
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background: linear-gradient(135deg, #1e1b4b 0%, #6d28d9 45%, #2563eb 100%);
+  background: linear-gradient(135deg, #0c1e4a 0%, #1e3a8a 45%, #0891b2 100%);
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -14,14 +14,16 @@ body {
   padding: 1.5rem;
 }
 
+/* O container inteiro AGORA é o gradiente neon — nada de caixa escura por
+   dentro. As mensagens flutuam direto sobre esse fundo. */
 .chat-container {
   width: 100%;
   max-width: 600px;
   height: 85vh;
   max-height: 700px;
-  background: #14141f;
+  background: linear-gradient(160deg, #0c1e4a 0%, #1e3a8a 55%, #0891b2 100%);
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(8, 145, 178, 0.25);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -29,7 +31,7 @@ body {
 
 .chat-header {
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   text-align: center;
 }
 
@@ -37,10 +39,11 @@ body {
   color: #fff;
   font-size: 1.3rem;
   margin-bottom: 0.4rem;
+  text-shadow: 0 0 20px rgba(34, 211, 238, 0.6);
 }
 
 .chat-header p {
-  color: #a0a0b8;
+  color: #b8d4f0;
   font-size: 0.85rem;
 }
 
@@ -62,24 +65,33 @@ body {
   white-space: pre-wrap; /* preserva quebras de linha da resposta */
 }
 
+/* Efeito "vidro": fundo translúcido + leve desfoque, deixa o gradiente
+   de trás aparecer por baixo, em vez de uma caixa sólida separada. */
 .mensagem-assistente {
   align-self: flex-start;
-  background: #1f1f2e;
-  color: #e8e8f0;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #f0f7ff;
   border-bottom-left-radius: 4px;
 }
 
 .mensagem-usuario {
   align-self: flex-end;
-  background: linear-gradient(135deg, #6d28d9, #2563eb);
+  background: rgba(34, 211, 238, 0.35);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(34, 211, 238, 0.5);
   color: #fff;
   border-bottom-right-radius: 4px;
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.3);
 }
 
 .mensagem-erro {
   align-self: flex-start;
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fecaca;
   border-bottom-left-radius: 4px;
 }
 
@@ -94,7 +106,8 @@ body {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #6d28d9;
+  background: #22d3ee;
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.8);
   animation: pulsar 1.2s infinite ease-in-out;
 }
 
@@ -110,43 +123,52 @@ body {
   display: flex;
   gap: 0.6rem;
   padding: 1rem 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .chat-form input {
   flex: 1;
   padding: 0.8rem 1rem;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: #1f1f2e;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   color: #fff;
   font-size: 0.95rem;
 }
 
+.chat-form input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .chat-form input:focus {
   outline: none;
-  border-color: #6d28d9;
+  border-color: #22d3ee;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
 }
 
 .chat-form button {
   padding: 0.8rem 1.3rem;
   border-radius: 10px;
-  border: none;
-  background: linear-gradient(135deg, #6d28d9, #2563eb);
+  border: 1px solid rgba(34, 211, 238, 0.6);
+  background: rgba(34, 211, 238, 0.25);
+  backdrop-filter: blur(10px);
   color: #fff;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .chat-form button:hover {
   transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
 }
 
 .chat-form button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
 }
 
 @media (max-width: 600px) {
