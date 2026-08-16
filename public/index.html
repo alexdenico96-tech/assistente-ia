@@ -3,10 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Assistente IA — Gerardo Silva</title>
+  <title>Connor — Assistente de Gerardo Silva</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>Assistente de IA em construção 🚧</h1>
-  <p>Se você está vendo isso, o servidor está servindo os arquivos estáticos corretamente.</p>
+
+  <div class="chat-container">
+    <header class="chat-header">
+      <h1>🤖 Connor</h1>
+      <p>Assistente treinado com meu currículo e portfólio — pergunte sobre minha formação, experiência ou projetos.</p>
+    </header>
+
+    <div class="chat-mensagens" id="chatMensagens">
+      <div class="mensagem mensagem-assistente">
+        Oi! Eu sou o Connor, assistente que conhece a formação, experiência e projetos do Gerardo.
+        Pode perguntar o que quiser sobre a trajetória dele. 👋
+      </div>
+    </div>
+
+    <div class="chat-digitando" id="chatDigitando" style="display: none;">
+      <span></span><span></span><span></span>
+    </div>
+
+    <form class="chat-form" id="chatForm">
+      <input
+        type="text"
+        id="chatInput"
+        placeholder="Pergunte algo, ex: 'Qual a experiência dele na Accenture?'"
+        autocomplete="off"
+        required
+      >
+      <button type="submit" id="chatBotao">Enviar</button>
+    </form>
+  </div>
+
+  <script src="js/script.js"></script>
 </body>
 </html>

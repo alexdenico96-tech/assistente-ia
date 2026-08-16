@@ -10,6 +10,7 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const Groq = require('groq-sdk');
+const { CONTEXTO_GERARDO } = require('./contexto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,27 +35,42 @@ app.get('/api/status', (req, res) => {
 });
 
 // ============================
-// TESTE DA API DA GROQ
+// CHAT COM MEMÓRIA DE CONVERSA
 // ============================
-// Rota temporária, só pra confirmar que a integração funciona antes de
-// montar o chat de verdade (Passo 4 em diante).
-app.get('/api/teste-groq', async (req, res) => {
+// O front-end manda a mensagem nova E o histórico da conversa até agora.
+// Isso é necessário porque a API não guarda memória sozinha — cada chamada
+// é isolada, então SOMOS NÓS que reenviamos o histórico toda vez, pra dar
+// a ilusão de "conversa contínua".
+app.post('/api/chat', async (req, res) => {
+  const { mensagem, historico } = req.body;
+
+  if (!mensagem || typeof mensagem !== 'string') {
+    return res.status(400).json({ erro: 'Mensagem inválida.' });
+  }
+
+  // Limite de segurança: no máximo 20 mensagens de histórico, pra não deixar
+  // a conversa crescer sem limite (isso afeta custo/velocidade da API).
+  const historicoLimitado = Array.isArray(historico) ? historico.slice(-20) : [];
+
   try {
     const resposta = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile', // modelo open-source rodando na infraestrutura da Groq
-      max_tokens: 100,
+      model: 'llama-3.3-70b-versatile',
+      max_tokens: 500,
       messages: [
-        { role: 'user', content: 'Responda em uma frase curta: você está funcionando?' },
+        // "system" define o papel/contexto — só aparece uma vez, no início
+        { role: 'system', content: CONTEXTO_GERARDO },
+        // depois vem todo o histórico da conversa até agora
+        ...historicoLimitado,
+        // e por último, a mensagem nova do visitante
+        { role: 'user', content: mensagem },
       ],
     });
 
-    // A resposta vem dentro de "choices[0].message.content"
-    // (mesmo formato usado pela API da OpenAI, que a Groq segue)
     const texto = resposta.choices[0].message.content;
     res.json({ sucesso: true, resposta: texto });
   } catch (erro) {
     console.error('Erro ao chamar a API da Groq:', erro);
-    res.status(500).json({ sucesso: false, erro: erro.message });
+    res.status(500).json({ sucesso: false, erro: 'Não foi possível obter uma resposta agora.' });
   }
 });
 
