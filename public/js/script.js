@@ -2,6 +2,18 @@
 // CHAT DO ASSISTENTE
 // ============================
 
+// ============================
+// MODO EMBUTIDO (dentro do widget do portfólio)
+// ============================
+// Quando o Connor é carregado dentro do iframe do widget, a URL vem com
+// "?embed=1" (veja o data-src no index.html do portfólio). Nesse caso,
+// removemos o cartão/cabeçalho próprios da página, porque o widget do
+// portfólio já tem os dele — assim sobra só UMA caixa, não duas.
+const parametros = new URLSearchParams(window.location.search);
+if (parametros.get('embed') === '1') {
+  document.body.classList.add('embutido');
+}
+
 const chatMensagens = document.getElementById('chatMensagens');
 const chatForm = document.getElementById('chatForm');
 const chatInput = document.getElementById('chatInput');
