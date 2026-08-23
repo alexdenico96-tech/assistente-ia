@@ -86,6 +86,10 @@ async function enviarCopiaConversa({ email_visitante, historico, mensagemAtual }
       ${conversaFormatada}
     `,
   });
+
+  // Log explícito de confirmação — sem isso, só saberíamos se algo DEU ERRADO
+  // (o catch já loga erros), mas não tínhamos como confirmar quando funcionava.
+  console.log(`[enviar_copia_conversa] Email enviado com sucesso para ${process.env.EMAIL_USER}, reply-to: ${email_visitante}`);
 }
 
 // ============================
@@ -121,6 +125,7 @@ app.post('/api/chat', async (req, res) => {
 
     // Se o modelo NÃO pediu pra usar a ferramenta, é uma resposta de texto normal.
     if (!chamadasDeFerramenta || chamadasDeFerramenta.length === 0) {
+      console.log(`[chat] Resposta direta, sem chamar ferramenta. Mensagem do visitante: "${mensagem}"`);
       return res.json({ sucesso: true, resposta: mensagemResposta.content });
     }
 
