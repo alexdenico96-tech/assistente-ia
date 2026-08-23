@@ -74,7 +74,7 @@ function formatarConversa(historico, mensagemAtual) {
 async function enviarCopiaConversa({ email_visitante, historico, mensagemAtual }) {
   const conversaFormatada = formatarConversa(historico, mensagemAtual);
 
-  await resend.emails.send({
+  const resultado = await resend.emails.send({
     from: 'Connor <onboarding@resend.dev>',
     to: process.env.EMAIL_USER,
     reply_to: email_visitante,
@@ -87,9 +87,15 @@ async function enviarCopiaConversa({ email_visitante, historico, mensagemAtual }
     `,
   });
 
-  // Log explícito de confirmação — sem isso, só saberíamos se algo DEU ERRADO
-  // (o catch já loga erros), mas não tínhamos como confirmar quando funcionava.
-  console.log(`[enviar_copia_conversa] Email enviado com sucesso para ${process.env.EMAIL_USER}, reply-to: ${email_visitante}`);
+  // IMPORTANTE: o SDK da Resend não lança exceção em todo erro — em muitos
+  // casos (ex: restrição de remetente/domínio) ele retorna { error: {...} }
+  // normalmente, sem quebrar o await. Por isso PRECISAMOS checar esse campo
+  // manualmente; sem isso, o código seguia achando que tinha dado certo.
+  if (resultado.error) {
+    throw new Error(resultado.error.message);
+  }
+
+  console.log(`[enviar_copia_conversa] Email enviado com sucesso (id: ${resultado.data?.id}) para ${process.env.EMAIL_USER}, reply-to: ${email_visitante}`);
 }
 
 // ============================
